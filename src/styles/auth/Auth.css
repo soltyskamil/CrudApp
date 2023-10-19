@@ -1,0 +1,61 @@
+.authentication{
+    border: 2px solid black;
+    height: 100vh;
+    display: flex;
+}
+.auth__background{
+    flex: 2;
+}
+.auth__background img{
+    height: 100%;
+    object-fit: cover;
+}
+.auth__login{
+    position: relative;
+    flex: 1;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.auth__login::before{
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 10px;
+    height: 100%;
+    
+}
+.auth__login svg{
+    border-radius: 100vw;
+    background: #9c27b0;
+    border: 2px solid #9c27b0;
+    font-size: 2.5rem;
+    padding: .5rem;
+    margin: 0 auto;
+    fill: white;
+}
+
+.auth__login form input, button{
+    display: block;
+    width: 75%;
+    padding: .5rem;
+    margin: .25rem auto;
+    border: 1px solid grey;
+}
+.auth__login button{
+    background-color: black;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1.4px;
+}
+.auth__login form, .google{
+    margin:1rem 0;
+}
+@media(max-width: 50em){
+    .auth__background{
+        display: none;
+    }
+}
