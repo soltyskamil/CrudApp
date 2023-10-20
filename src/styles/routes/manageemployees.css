@@ -1,0 +1,10 @@
+.section__app{
+    flex: 1;
+    background-color: aqua;
+}
+.employee__managment{
+    display: none;
+}
+.visible{
+    display: block;
+}

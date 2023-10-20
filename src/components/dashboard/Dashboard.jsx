@@ -22,9 +22,7 @@ import Analytics from '../routes/Analytics'
 import Settings from '../routes/Settings'
 import { useState } from 'react'
 function Dashboard({user}) {
-
   const [logout, setLogout] = useState(false)
-  console.log(user)
   const navigate = useNavigate()
   const logoutHandler = () => {
 
