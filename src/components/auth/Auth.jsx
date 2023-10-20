@@ -1,6 +1,5 @@
 import React from 'react'
-import { initializeApp } from "firebase/app";
-import { firebaseConfig, auth} from '../../config/firebase';
+import { auth } from '../../config/firebase';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useState } from 'react';
@@ -41,12 +40,17 @@ function CreateAccount(){
                     icon: 'success',
                     confirmButtonText: 'Close'
                   })
-                  navigate('/dashboard')
             })
             .catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 console.error("Firebase Authentication Error:", errorCode, errorMessage);
+                Swal.fire({
+                    title: 'Error!',
+                    text: errorCode,
+                    icon: 'error',
+                    confirmButtonText: 'Close'
+                  })
             });  
         }else{
           Swal.fire({
@@ -85,7 +89,6 @@ function SignIn(){
                     icon: 'success',
                     confirmButtonText: 'Close'
                   })
-                navigate('/dashboard')
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -93,7 +96,7 @@ function SignIn(){
                 console.error("Firebase Authentication Error:", errorCode, errorMessage);
                 Swal.fire({
                     title: 'Error!',
-                    text: 'Incorrect credentials.',
+                    text: errorCode,
                     icon: 'error',
                     confirmButtonText: 'Close'
                   })
@@ -118,7 +121,6 @@ function SignInSocials(){
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
             const user = result.user;
-            navigate('/dashboard')
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
