@@ -13,7 +13,7 @@ function ManageEmployees() {
       surname: '',
       role: '',
       salary: 0,
-      timestamp: new Date,
+      timestamp: '',
     }
     const [state, dispatch] = useStateValue()
     const [formData, setFormData] = useState(initialFormState)
@@ -41,6 +41,11 @@ function ManageEmployees() {
     console.log(workers)
   }
 
+  const handleForm = (e) => {
+    const { name, value } = e.target
+    setFormData((prevData) => ({...prevData, [name]: value}))
+  }
+
   const handleDelete = (e, index, id) => {
       Swal.fire({
         title: 'Are you sure?',
@@ -56,14 +61,22 @@ function ManageEmployees() {
   }
  
   const handleEdit = (e, index, id) => {
-    const name = document.querySelectorAll('input[data-name]')[index]
-    const surname = document.querySelectorAll('input[data-surname]')[index]
-    const role = document.querySelectorAll('input[data-role]')[index]
-    const salary = document.querySelectorAll('input[data-salary]')[index]
-    const timestamp = document.querySelectorAll('input[data-timestamp]')[index]
-    const confirmButton = document.querySelectorAll('td button[data-edit]')[index]
-    const inputs = [name, surname, role, salary, timestamp]
+    const table = [...document.querySelector(`#${id}`).children]
+    const inputObject = {}
+    const inputs = table.map((item, i) => {
+      return item.children[0]
+    }).slice(0, -1)
+    
+    inputs.forEach((input) => {
+      const name = input.getAttribute('name')
+      const value = input.value;
+      inputObject[name] = value
+    })
 
+    console.log(inputObject)
+    
+    
+    const confirmButton = document.querySelectorAll('td button[data-edit]')[index]
     confirmButton.classList.toggle('editData')
     if(confirmButton.classList.contains('editData')) {
       confirmButton.textContent = 'APPLY'
@@ -72,11 +85,11 @@ function ManageEmployees() {
     else if(!confirmButton.classList.contains('editData')) {
       const employeeRef = doc(db, "employees", id)
       updateDoc(employeeRef, {
-        name: name.value,
-        surname: surname.value,
-        role: role.value,
-        salary: salary.value,
-        timestamp: timestamp.value
+        name: inputObject.name,
+        surname: inputObject.surname,
+        role: inputObject.role,
+        salary: inputObject.salary,
+        timestamp: inputObject.timestamp
       })
       inputs.forEach((item, i) => item.setAttribute('readonly', true))
       confirmButton.textContent = 'EDIT'
@@ -86,19 +99,7 @@ function ManageEmployees() {
   const handleSubmit = (e) => {
     e.preventDefault()
     const form = document.querySelector('#form')
-    const name = document.querySelector('input[data-addname]').value
-    const surname = document.querySelector('input[data-addsurname]').value
-    const salary = document.querySelector('input[data-addsalary]').value
-    const role = document.querySelector('input[data-addrole]').value
-    const timestamp = document.querySelector('input[data-addtimestamp]').value
-    console.log(name, surname, salary, role, timestamp)
-    addDoc(collection(db, "employees"), {
-      name: name,
-      surname: surname,
-      role: role,
-      salary: salary,
-      timestamp: timestamp,
-    })
+    addDoc(collection(db, 'employees'), formData)
     form.reset()
   }
 
@@ -114,11 +115,46 @@ function ManageEmployees() {
         </div>
         <div className="employee__managment">
           <form onSubmit={handleSubmit} id='form'>
-            <input type="text" data-addname placeholder='name' required/>
-            <input type="text" data-addsurname placeholder='surname' required/>
-            <input type="text" data-addsalary placeholder='salary' required/>
-            <input type="text" data-addrole placeholder='role' required/>
-            <input type="date" data-addtimestamp placeholder='started working' required/>
+            <input type="text" 
+              data-addname 
+              placeholder='name'
+              name='name'
+              value={formData.name}
+              onChange={handleForm}
+              required
+            />
+            <input type="text" 
+              data-addsurname 
+              placeholder='surname'
+              name='surname'
+              value={formData.surname}
+              onChange={handleForm}
+              required
+            />
+            <input type="text" 
+              data-addsalary 
+              placeholder='salary'
+              name='salary' 
+              value={formData.salary}
+              onChange={handleForm}
+              required
+            />
+            <input type="text" 
+              data-addrole 
+              placeholder='role'
+              name='role'
+              value={formData.role}
+              onChange={handleForm} 
+              required
+            />
+            <input type="date" 
+              data-addtimestamp 
+              placeholder='started working'
+              name='timestamp'
+              value={formData.timestamp}
+              onChange={(e) => handleForm(e)} 
+              required
+            />
             <button type='submit'>
               Confirm
             </button>
@@ -139,12 +175,12 @@ function ManageEmployees() {
           </thead>
           <tbody>
             {workers.length > 0 && workers.map((item, index) => (
-            <tr key={item.id} id='employee__table__details'>
-              <td><input type="text" data-name defaultValue={item.data.name} readOnly/></td>
-              <td><input type="text" data-surname defaultValue={item.data.surname} readOnly/></td>
-              <td><input type="text" data-role defaultValue={item.data.role} readOnly/></td>
-              <td><input type="number" data-salary defaultValue={item.data.salary} readOnly/></td>
-              <td><input type="date" data-timestamp defaultValue={item.data.timestamp} readOnly/></td>
+            <tr key={item.id} id={item.id}>
+              <td><input type="text" name='name' data-name defaultValue={item.data.name} readOnly/></td>
+              <td><input type="text" name='surname' data-surname defaultValue={item.data.surname} readOnly/></td>
+              <td><input type="text" name='role' data-role defaultValue={item.data.role} readOnly/></td>
+              <td><input type="number" name='salary' data-salary defaultValue={item.data.salary} readOnly/></td>
+              <td><input type="date" name='timestamp' data-timestamp defaultValue={item.data.timestamp} readOnly/></td>
               <td style={{display:'flex'}}>
                 <button data-edit onClick={(e) => handleEdit(e, index, item.id)}>EDIT</button>
                 <button onClick={(e) => handleDelete(e, index, item.id)}>DELETE</button>
