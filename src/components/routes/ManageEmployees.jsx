@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { collection, getDocs, addDoc, doc, updateDoc, deleteDoc, query, where, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, orderBy , addDoc, doc, updateDoc, deleteDoc, query, onSnapshot } from "firebase/firestore";
 import { db } from '../../config/firebase';
 import { useEffect } from 'react';
 import '../../styles/routes/manageemployees.css'
@@ -17,44 +17,42 @@ function ManageEmployees() {
     }
     const [state, dispatch] = useStateValue()
     const [formData, setFormData] = useState(initialFormState)
-   
+    const [workers, setWorkers] = useState([])
+
     useEffect(() => {
-      async function fetchData(){
-       try{
-        const querySnapshot = await getDocs(collection(db, "employees"));
-        const employeesArr = [];
-          querySnapshot.forEach((doc) => {
-            const employeeId = doc.id;
-            const data = doc.data()
-            employeesArr.push({employeeId, data})
-            dispatch({
-              type: 'FETCH__SUCCESS',
-              payload: employeesArr,
-            })
-          })}
-          catch(error){
-            console.error('Error: ', error)
-          } 
-      }
-      fetchData()
-    }, [])
-    console.log(state.employees.length)
+      const q = query(collection(db, "employees"), orderBy('name'));
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const employees = [];
+        querySnapshot.forEach((doc) => {
+          employees.push({data: doc.data(), id: doc.id});
+        });
+        setWorkers(employees);
+        console.log("Current employees", employees);
+      });
+    
+      return () => {
+        unsubscribe();
+      };
+    }, []);
+    
+
   const addEmployee = () => {
     document.querySelector('.employee__managment').classList.toggle('visible')
+    console.log(workers)
   }
 
   const handleDelete = (e, index, id) => {
-    let decision = false;
       Swal.fire({
         title: 'Are you sure?',
         text: 'Do you want to delete employee from database?',
         icon: 'warning',
         confirmButtonText: 'Yes'
       })
-      .then(decision = !decision)
-    if(decision){
-      deleteDoc(doc(db, "employees", id));
-    }
+      .then((result) => {
+        if(result.isConfirmed){
+          deleteDoc(doc(db, "employees", id));
+        }
+      })
   }
  
   const handleEdit = (e, index, id) => {
@@ -87,30 +85,23 @@ function ManageEmployees() {
   
   const handleSubmit = (e) => {
     e.preventDefault()
+    const form = document.querySelector('#form')
+    const name = document.querySelector('input[data-addname]').value
+    const surname = document.querySelector('input[data-addsurname]').value
+    const salary = document.querySelector('input[data-addsalary]').value
+    const role = document.querySelector('input[data-addrole]').value
+    const timestamp = document.querySelector('input[data-addtimestamp]').value
+    console.log(name, surname, salary, role, timestamp)
     addDoc(collection(db, "employees"), {
-      name: formData.name,
-      surname: formData.surname,
-      role: formData.role,
-      salary: formData.salary,
-      timestamp: formData.timestamp,
+      name: name,
+      surname: surname,
+      role: role,
+      salary: salary,
+      timestamp: timestamp,
     })
-    setFormData(initialFormState)
+    form.reset()
   }
 
-  const q = query(collection(db, "employees"));
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    snapshot.docChanges().forEach((change) => {
-      if (change.type === "added") {
-          console.log("New employee: ", change.doc.data());
-      }
-      if (change.type === "modified") {
-          console.log("Modified employee data: ", change.doc.data());
-      }
-      if (change.type === "removed") {
-          console.log("Removed employee: ", change.doc.data());
-      }
-    });
-  });
 
   return (
    <>
@@ -122,13 +113,13 @@ function ManageEmployees() {
           </button>
         </div>
         <div className="employee__managment">
-          <form>
-            <input type="text" placeholder='name' value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})}/>
-            <input type="text" placeholder='surname' value={formData.surname} onChange={(e) => setFormData({...formData, surname: e.target.value})}/>
-            <input type="text" placeholder='salary' value={formData.salary} onChange={(e) => setFormData({...formData, salary: e.target.value})}/>
-            <input type="text" placeholder='role' value={formData.role} onChange={(e) => setFormData({...formData, role: e.target.value})}/>
-            <input type="date" placeholder='started working' value={formData.timestamp} onChange={(e) => setFormData({...formData, timestamp: e.target.value})}/>
-            <button type='submit' onClick={handleSubmit}>
+          <form onSubmit={handleSubmit} id='form'>
+            <input type="text" data-addname placeholder='name' required/>
+            <input type="text" data-addsurname placeholder='surname' required/>
+            <input type="text" data-addsalary placeholder='salary' required/>
+            <input type="text" data-addrole placeholder='role' required/>
+            <input type="date" data-addtimestamp placeholder='started working' required/>
+            <button type='submit'>
               Confirm
             </button>
           </form>
@@ -147,16 +138,16 @@ function ManageEmployees() {
             </tr>
           </thead>
           <tbody>
-            {!state.loading && state.employees.map((item, index) => (
-            <tr key={index} id='employee__table__details'>
+            {workers.length > 0 && workers.map((item, index) => (
+            <tr key={item.id} id='employee__table__details'>
               <td><input type="text" data-name defaultValue={item.data.name} readOnly/></td>
               <td><input type="text" data-surname defaultValue={item.data.surname} readOnly/></td>
               <td><input type="text" data-role defaultValue={item.data.role} readOnly/></td>
               <td><input type="number" data-salary defaultValue={item.data.salary} readOnly/></td>
               <td><input type="date" data-timestamp defaultValue={item.data.timestamp} readOnly/></td>
               <td style={{display:'flex'}}>
-                <button data-edit onClick={(e) => handleEdit(e, index, item.employeeId)}>EDIT</button>
-                <button onClick={(e) => handleDelete(e, index, item.employeeId)}>DELETE</button>
+                <button data-edit onClick={(e) => handleEdit(e, index, item.id)}>EDIT</button>
+                <button onClick={(e) => handleDelete(e, index, item.id)}>DELETE</button>
               </td>
             </tr>)
             )}
