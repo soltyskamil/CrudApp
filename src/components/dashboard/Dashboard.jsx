@@ -65,7 +65,7 @@ function Dashboard({user}) {
             <li>
               <NavLink to='/employeelist'>
                 <PeopleIcon/>
-                <span>Employee List</span>
+                <span>Employees tasks</span>
               </NavLink>
             </li>
             <li>

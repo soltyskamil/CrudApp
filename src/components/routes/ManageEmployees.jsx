@@ -4,10 +4,9 @@ import { db } from '../../config/firebase';
 import { useEffect } from 'react';
 import '../../styles/routes/manageemployees.css'
 import { useStateValue } from '../../reducer/StateProvider'
-import { useRef } from 'react';
 import Swal from 'sweetalert2';
 function ManageEmployees() {
-    
+
     const initialFormState = {
       name: '',
       surname: '',
@@ -15,6 +14,7 @@ function ManageEmployees() {
       salary: 0,
       timestamp: '',
     }
+    
     const [{employees}, dispatch] = useStateValue()
     const [formData, setFormData] = useState(initialFormState)
     const [workers, setWorkers] = useState([])
@@ -23,7 +23,7 @@ function ManageEmployees() {
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const employees = [];
         querySnapshot.forEach((doc) => {
-          employees.push({data: doc.data(), id: doc.id});
+          employees.push({data: doc.data(), id: doc.id, tasks: {}});
         });
         dispatch({
           type: 'FETCH__SUCCESS',

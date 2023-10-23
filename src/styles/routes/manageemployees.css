@@ -6,6 +6,35 @@
 .employee__managment{
     display: none;
 }
+.task__managment{
+    display: none;
+}
+.add__task {
+    padding: 2rem;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    /* height: 65vh; */
+    /* height: 20vh; */
+    width: 65vw;
+    background-color: white;
+    border: 2px solid black;
+    display: none;
+}
+.add__task__wrapper{
+    display: flex;
+    height: 100%;
+    /* flex-direction: column; */
+    align-items: center;
+    justify-content: center;
+}
+.add__task__wrapper input,select{
+    width: 100%;
+}
+table{
+    width: 100%;
+}
 .visible{
     display: block;
 }
