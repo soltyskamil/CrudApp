@@ -3,7 +3,6 @@ import { collection, getDocs, orderBy , addDoc, doc, updateDoc, deleteDoc, query
 import { db } from '../../config/firebase';
 import { useEffect } from 'react';
 import '../../styles/routes/manageemployees.css'
-import { useStateValue } from '../../reducer/StateProvider';
 import { useRef } from 'react';
 import Swal from 'sweetalert2';
 function ManageEmployees() {
@@ -15,7 +14,7 @@ function ManageEmployees() {
       salary: 0,
       timestamp: '',
     }
-    const [state, dispatch] = useStateValue()
+
     const [formData, setFormData] = useState(initialFormState)
     const [workers, setWorkers] = useState([])
 
@@ -27,26 +26,37 @@ function ManageEmployees() {
           employees.push({data: doc.data(), id: doc.id});
         });
         setWorkers(employees);
-        console.log("Current employees", employees);
       });
     
       return () => {
         unsubscribe();
       };
     }, []);
-    
 
-  const addEmployee = () => {
-    document.querySelector('.employee__managment').classList.toggle('visible')
-    console.log(workers)
-  }
 
-  const handleForm = (e) => {
-    const { name, value } = e.target
-    setFormData((prevData) => ({...prevData, [name]: value}))
-  }
 
-  const handleDelete = (e, index, id) => {
+  const handleActions = (e, index, id) => {
+    console.log(id)
+    const { name, textContent } = e.target
+    const table = [...document.getElementById(`${id}`).children]
+    const inputObject = {}
+
+    const inputs = table.map((item, i) => {
+      return item.children[0]
+    }).slice(0, -1)
+
+    inputs.forEach((input) => {
+      const name = input.getAttribute('name')
+      const value = input.value;
+      console.log(inputObject[name] = value)
+      inputObject[name] = value
+    })
+
+    if(textContent === 'EDIT') {
+      e.target.textContent = 'APPLY'
+      inputs.forEach((item, i) => item.removeAttribute('readonly'))
+    }
+    if(textContent === 'DELETE'){
       Swal.fire({
         title: 'Are you sure?',
         text: 'Do you want to delete employee from database?',
@@ -58,58 +68,31 @@ function ManageEmployees() {
           deleteDoc(doc(db, "employees", id));
         }
       })
-  }
- 
-  const handleEdit = (e, index, id) => {
-    const table = [...document.querySelector(`#${id}`).children]
-    const inputObject = {}
-    const inputs = table.map((item, i) => {
-      return item.children[0]
-    }).slice(0, -1)
-    
-    inputs.forEach((input) => {
-      const name = input.getAttribute('name')
-      const value = input.value;
-      inputObject[name] = value
-    })
-
-    console.log(inputObject)
-    
-    
-    const confirmButton = document.querySelectorAll('td button[data-edit]')[index]
-    confirmButton.classList.toggle('editData')
-    if(confirmButton.classList.contains('editData')) {
-      confirmButton.textContent = 'APPLY'
-      inputs.forEach((item, i) => item.removeAttribute('readonly'))
     }
-    else if(!confirmButton.classList.contains('editData')) {
-      const employeeRef = doc(db, "employees", id)
-      updateDoc(employeeRef, {
-        name: inputObject.name,
-        surname: inputObject.surname,
-        role: inputObject.role,
-        salary: inputObject.salary,
-        timestamp: inputObject.timestamp
-      })
+    if(textContent === 'APPLY'){
+      updateDoc(doc(db, "employees", id), {...inputObject})
       inputs.forEach((item, i) => item.setAttribute('readonly', true))
-      confirmButton.textContent = 'EDIT'
+      e.target.textContent = 'EDIT'
     }
   }
-  
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) => {  
     e.preventDefault()
-    const form = document.querySelector('#form')
     addDoc(collection(db, 'employees'), formData)
-    form.reset()
+    setFormData(initialFormState)
   }
-
+  const handleForm = (e) => {
+    const { name, value } = e.target
+    setFormData((prevData) => ({...prevData, [name]: value}))
+  }
 
   return (
    <>
       <div className="section__title">
         <h2>Manage Employees</h2>
         <div className="section__title__action">
-          <button onClick={() => addEmployee()}>
+          <button onClick={() => 
+            document.querySelector('.employee__managment').classList.toggle('visible')
+          }>
             Add employee
           </button>
         </div>
@@ -182,8 +165,8 @@ function ManageEmployees() {
               <td><input type="number" name='salary' data-salary defaultValue={item.data.salary} readOnly/></td>
               <td><input type="date" name='timestamp' data-timestamp defaultValue={item.data.timestamp} readOnly/></td>
               <td style={{display:'flex'}}>
-                <button data-edit onClick={(e) => handleEdit(e, index, item.id)}>EDIT</button>
-                <button onClick={(e) => handleDelete(e, index, item.id)}>DELETE</button>
+                <button name='edit' data-edit onClick={(e) => handleActions(e, index, item.id)}>EDIT</button>
+                <button name='delete' onClick={(e) => handleActions(e, index, item.id)}>DELETE</button>
               </td>
             </tr>)
             )}
