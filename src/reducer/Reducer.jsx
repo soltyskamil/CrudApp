@@ -9,8 +9,7 @@ export const reducer = (state, action) => {
     switch(action.type){
         case 'FETCH__SUCCESS':
             return {
-                employees: [...action.payload],
-                loading: false
+                employees: action.payload,
             }
         case 'ADD_EMPLOYEE':
             return {

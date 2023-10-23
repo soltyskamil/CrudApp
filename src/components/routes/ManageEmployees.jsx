@@ -3,10 +3,11 @@ import { collection, getDocs, orderBy , addDoc, doc, updateDoc, deleteDoc, query
 import { db } from '../../config/firebase';
 import { useEffect } from 'react';
 import '../../styles/routes/manageemployees.css'
+import { useStateValue } from '../../reducer/StateProvider'
 import { useRef } from 'react';
 import Swal from 'sweetalert2';
 function ManageEmployees() {
-  
+    
     const initialFormState = {
       name: '',
       surname: '',
@@ -14,10 +15,9 @@ function ManageEmployees() {
       salary: 0,
       timestamp: '',
     }
-
+    const [{employees}, dispatch] = useStateValue()
     const [formData, setFormData] = useState(initialFormState)
     const [workers, setWorkers] = useState([])
-
     useEffect(() => {
       const q = query(collection(db, "employees"), orderBy('name'));
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
@@ -25,15 +25,16 @@ function ManageEmployees() {
         querySnapshot.forEach((doc) => {
           employees.push({data: doc.data(), id: doc.id});
         });
-        setWorkers(employees);
+        dispatch({
+          type: 'FETCH__SUCCESS',
+          payload: employees
+        })
       });
     
       return () => {
         unsubscribe();
       };
     }, []);
-
-
 
   const handleActions = (e, index, id) => {
     console.log(id)
@@ -60,7 +61,7 @@ function ManageEmployees() {
       Swal.fire({
         title: 'Are you sure?',
         text: 'Do you want to delete employee from database?',
-        icon: 'warning',
+        icon: 'error',
         confirmButtonText: 'Yes'
       })
       .then((result) => {
@@ -70,16 +71,29 @@ function ManageEmployees() {
       })
     }
     if(textContent === 'APPLY'){
-      updateDoc(doc(db, "employees", id), {...inputObject})
-      inputs.forEach((item, i) => item.setAttribute('readonly', true))
-      e.target.textContent = 'EDIT'
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'Do you want to change employee data?',
+        icon: 'warning',
+        confirmButtonText: 'Yes'
+      })
+      .then((result) => {
+        if(result.isConfirmed){
+          updateDoc(doc(db, "employees", id), {...inputObject})
+          inputs.forEach((item, i) => item.setAttribute('readonly', true))
+          e.target.textContent = 'EDIT'
+        }
+      })
+      
     }
   }
+
   const handleSubmit = (e) => {  
     e.preventDefault()
     addDoc(collection(db, 'employees'), formData)
     setFormData(initialFormState)
   }
+
   const handleForm = (e) => {
     const { name, value } = e.target
     setFormData((prevData) => ({...prevData, [name]: value}))
@@ -157,7 +171,7 @@ function ManageEmployees() {
             </tr>
           </thead>
           <tbody>
-            {workers.length > 0 && workers.map((item, index) => (
+            {employees.length > 0 && employees.map((item, index) => (
             <tr key={item.id} id={item.id}>
               <td><input type="text" name='name' data-name defaultValue={item.data.name} readOnly/></td>
               <td><input type="text" name='surname' data-surname defaultValue={item.data.surname} readOnly/></td>

@@ -1,6 +1,7 @@
 .section__app{
     flex: 1;
     background-color: aqua;
+    overflow-x: scroll;
 }
 .employee__managment{
     display: none;
