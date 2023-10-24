@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { db } from '../../config/firebase'
-import { collection, getDocs, orderBy , addDoc, doc, updateDoc, deleteDoc, query, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, orderBy , addDoc, doc, updateDoc, deleteDoc, query, onSnapshot, arrayUnion } from "firebase/firestore";
 import { useStateValue } from '../../reducer/StateProvider'
 import Swal from 'sweetalert2';
 import '../../styles/routes/manageemployees.css'
@@ -36,9 +36,9 @@ function EmployeeList() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(formData)
-    updateDoc(doc(db, "employees", formData.id), {
-        task: {...formData}
+    const employeeRef = doc(db, "employees", formData.id)
+    updateDoc(employeeRef, {
+        tasks: arrayUnion({...formData})
     })
     setFormData(initialFormState)
   }
@@ -57,7 +57,7 @@ function EmployeeList() {
     <>
       <div className='section__title'>
         Manage Tasks
-        <button onClick={() => console.log(formData)}>check</button>
+        <button onClick={() => console.log(employees)}>check</button>
         <button onClick={() => document.querySelector('.add__task').classList.toggle('visible')}>Add task</button>
       </div>
       <div className="add__task">
