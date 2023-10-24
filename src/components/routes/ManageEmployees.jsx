@@ -23,7 +23,7 @@ function ManageEmployees() {
       const unsubscribe = onSnapshot(q, (querySnapshot) => {
         const employees = [];
         querySnapshot.forEach((doc) => {
-          employees.push({data: doc.data(), id: doc.id, tasks: {}});
+          employees.push({data: doc.data(), id: doc.id});
         });
         dispatch({
           type: 'FETCH__SUCCESS',

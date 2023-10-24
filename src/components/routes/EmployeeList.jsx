@@ -11,6 +11,7 @@ function EmployeeList() {
     details: '',
     priority: '',
     deadline: '',
+    id: '',
   }
 
   const [{employees}, dispatch] = useStateValue()
@@ -20,7 +21,7 @@ function EmployeeList() {
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const employees = [];
       querySnapshot.forEach((doc) => {
-        employees.push({data: doc.data(), id: doc.id, tasks: {}});
+        employees.push({data: doc.data(), id: doc.id});
       });
       dispatch({
         type: 'FETCH__SUCCESS',
@@ -36,16 +37,18 @@ function EmployeeList() {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log(formData)
-    updateDoc(doc(db, "employees", formData.employee), {
-      task: {...formData}
+    updateDoc(doc(db, "employees", formData.id), {
+        task: {...formData}
     })
     setFormData(initialFormState)
   }
 
   const handleForm = (e) => {
     const { name, value } = e.target
-    console.log(name, value)
-    setFormData((prevData) => ({...prevData, [name]: value}))
+    const employeeOption = document.querySelector('select[name]')
+    const selectedIndex = employeeOption.options.selectedIndex;
+    const id = employeeOption.options[selectedIndex].getAttribute('data-id')
+    setFormData((prevData) => ({...prevData, [name]: value, id: id}))
   }
   
 
@@ -54,6 +57,7 @@ function EmployeeList() {
     <>
       <div className='section__title'>
         Manage Tasks
+        <button onClick={() => console.log(formData)}>check</button>
         <button onClick={() => document.querySelector('.add__task').classList.toggle('visible')}>Add task</button>
       </div>
       <div className="add__task">
@@ -73,8 +77,8 @@ function EmployeeList() {
                 <td>
                   <select name='employee' value={formData.employee} onChange={handleForm}>
                     {employees.map((item, i) => (
-                      <option key={item.id} name={'id' + item.id}>
-                        {item.id}
+                      <option key={item.id} data-id={item.id}>
+                        {item.data.name + ' ' + item.data.surname}
                       </option>
                     ))}
                   </select>
@@ -114,12 +118,10 @@ function EmployeeList() {
             {/* {employees.length > 0 && employees.map((item, index) => (
             <tr key={item.id} id={item.id}>
               <td><input type="text" name='name' data-name defaultValue={item.data.name + ' ' + item.data.surname} readOnly/></td>
-              <td><input type="text" name='taskdetails' data-timestamp defaultValue={item.data.name} readOnly/></td>
-              <td><input type="text" name='taskpriority' data-timestamp defaultValue={item.data.name} readOnly/></td>
-              <td><input type="date" name='timestamp' data-timestamp defaultValue={item.data.timestamp} readOnly/></td>
-              <td>
-                <button onClick={() => document.querySelector('.add__task').classList.toggle('visible')}>Add task</button>
-              </td>
+              <td><input type="text" name='taskdetails' data-timestamp defaultValue={item.data.task.details} readOnly/></td>
+              <td><input type="text" name='taskpriority' data-timestamp defaultValue={item.data.task.priority} readOnly/></td>
+              <td><input type="datetime-local" name='timestamp' data-timestamp defaultValue={item.data.task.deadline} readOnly/></td>
+              <td><input type="text" name='taskstatus' data-timestamp defaultValue='NOT FINISHED' readOnly/></td>
             </tr>)
             )} */}
           </tbody>
