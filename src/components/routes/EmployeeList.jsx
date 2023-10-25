@@ -68,8 +68,7 @@ function EmployeeList() {
       e.target.textContent = 'APPLY'
       inputs.forEach((item, i) => item.removeAttribute('readonly'))
     }
-    if(textContent === 'APPLY'){
-      console.log(employeeId)  
+    if(textContent === 'APPLY'){ 
       inputs.forEach((item, i) => item.setAttribute('readonly', true))
       e.target.textContent = 'EDIT'
       const employeeRef = doc(db, 'employees', employeeId)
@@ -91,7 +90,37 @@ function EmployeeList() {
         })
     }
     if(textContent === 'FINISHED'){
-      console.log('Usunięto')
+      const employeeRef = doc(db, 'employees', employeeId)
+      getDoc(employeeRef)
+        .then((employeeDoc) => {
+          if(employeeDoc.exists()){
+            const employeeData = employeeDoc.data()
+            const updatedArray = employeeData.tasks.filter(item => item.taskId !== id)
+            console.log(updatedArray)
+            Swal.fire({
+              title: 'Are you sure?',
+              text: 'Do you want to end this task?',
+              icon: 'error',
+              confirmButtonText: 'Yes'
+            })
+            .then((result) => {
+              if(result.isConfirmed){
+                updateDoc(employeeRef, {
+                  tasks: updatedArray
+                })
+              }
+            })
+            .then(() => {
+              Swal.fire({
+                title: 'Task has been finished',
+                // text: 'Do you want to end this task?',
+                icon: 'success',
+                confirmButtonText: 'Close'
+              })
+            })
+            
+          }
+        })
     }
   }
 
