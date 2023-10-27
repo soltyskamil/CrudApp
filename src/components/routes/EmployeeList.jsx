@@ -46,7 +46,7 @@ function EmployeeList() {
     if(every){
       const employeeRef = doc(db, "employees", formData.id)
       updateDoc(employeeRef, {
-          tasks: arrayUnion({...formData})
+          tasks: arrayUnion({...formData, started: new Date().getTime()})
       })
       setFormData(initialFormState)
     }else{
@@ -106,6 +106,14 @@ function EmployeeList() {
         .then((employeeDoc) => {
           if(employeeDoc.exists()){
             const employeeData = employeeDoc.data()
+            const date = new Date().getTime()
+            const employeeTime = employeeData.tasks.map(item => {
+              if(item.taskId === id){
+                return item.started
+              }
+            })
+            console.log((employeeData.finishedTasks.ended + 1))
+            
             const updatedArray = employeeData.tasks.filter(item => item.taskId !== id)
             Swal.fire({
               title: 'Are you sure?',
@@ -115,9 +123,14 @@ function EmployeeList() {
             })
             .then((result) => {
               if(result.isConfirmed){
+                const date = new Date().getTime()
+                console.log(employeeData.finishedTasks.ended)
                 updateDoc(employeeRef, {
                   tasks: updatedArray,
-                  finishedTasks: employeeData.finishedTasks + 1
+                  finishedTasks: {
+                    ended: employeeData.finishedTasks.ended + 1,
+                    time: (date - new Date(employeeTime[0]).getTime()) / (employeeData.finishedTasks.ended + 1),
+                  }
                 })
               }
             })

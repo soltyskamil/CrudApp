@@ -13,7 +13,9 @@ function ManageEmployees() {
       role: '',
       salary: 0,
       timestamp: '',
-      finishedTasks: 0,
+      finishedTasks: {
+        ended: 0,
+      }
     }
     
     const [{employees}, dispatch] = useStateValue()
@@ -97,7 +99,7 @@ function ManageEmployees() {
 
   const handleForm = (e) => {
     const { name, value } = e.target
-    setFormData((prevData) => ({...prevData, [name]: value, finishedTasks: 0}))
+    setFormData((prevData) => ({...prevData, [name]: value, finishedTasks:{ended: 0, time: ''}}))
   }
 
   return (

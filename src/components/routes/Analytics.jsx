@@ -27,13 +27,29 @@ function Analytics() {
       Analytics
       <table className='employees'>
         <thead>
-          <th>Employee</th>
-          <th>Task finished</th>
-          <th>Most common task priority</th>
-          <th>Average time needed to finish the task</th>
+          <tr>
+            <th>Employee</th>
+            <th>Task finished</th>
+            <th>Most common task priority</th>
+            <th>Average time needed to finish the task</th>
+          </tr>
         </thead>
         <tbody>
-
+          {employees.length > 0 && employees.map((item, i) => {
+            function millisToMinutesAndSeconds(millis) {
+              var minutes = Math.floor(millis / 60000);
+              var seconds = ((millis % 60000) / 1000).toFixed(0);
+              return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+            }
+            return (
+              <tr key={item.data.id}>
+                <td>{item.data.name}</td>
+                <td>{item.data.finishedTasks.ended}</td>
+                <td></td>
+                <td>{item.data.finishedTasks.time && millisToMinutesAndSeconds(item.data.finishedTasks.time)}</td>
+              </tr>
+            )
+          })}
         </tbody>
       </table>
       
