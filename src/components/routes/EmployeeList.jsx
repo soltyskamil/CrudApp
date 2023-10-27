@@ -111,9 +111,7 @@ function EmployeeList() {
               if(item.taskId === id){
                 return item.started
               }
-            })
-            console.log((employeeData.finishedTasks.ended + 1))
-            
+            }).filter((item, i) => item !== undefined)
             const updatedArray = employeeData.tasks.filter(item => item.taskId !== id)
             Swal.fire({
               title: 'Are you sure?',
@@ -124,12 +122,11 @@ function EmployeeList() {
             .then((result) => {
               if(result.isConfirmed){
                 const date = new Date().getTime()
-                console.log(employeeData.finishedTasks.ended)
                 updateDoc(employeeRef, {
                   tasks: updatedArray,
                   finishedTasks: {
                     ended: employeeData.finishedTasks.ended + 1,
-                    time: (date - new Date(employeeTime[0]).getTime()) / (employeeData.finishedTasks.ended + 1),
+                    time: (date - new Date(employeeTime[0]).getTime()) - (employeeData.finishedTasks.ended + 1),
                   }
                 })
               }

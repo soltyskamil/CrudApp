@@ -46,7 +46,12 @@ function Analytics() {
                 <td>{item.data.name}</td>
                 <td>{item.data.finishedTasks.ended}</td>
                 <td></td>
-                <td>{item.data.finishedTasks.time && millisToMinutesAndSeconds(item.data.finishedTasks.time)}</td>
+                <td>
+                  {item.data.finishedTasks.time 
+                  ? millisToMinutesAndSeconds(item.data.finishedTasks.time)
+                  : <span>No ended tasks</span>
+                  }
+                </td>
               </tr>
             )
           })}
