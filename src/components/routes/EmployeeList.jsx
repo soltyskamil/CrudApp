@@ -38,11 +38,20 @@ function EmployeeList() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    const employeeRef = doc(db, "employees", formData.id)
-    updateDoc(employeeRef, {
-        tasks: arrayUnion({...formData})
+    const values = Object.values(formData).slice(0, -1)
+    const every = values.every((el) => {
+      if(el === '') return false
+      else return true
     })
-    setFormData(initialFormState)
+    if(every){
+      const employeeRef = doc(db, "employees", formData.id)
+      updateDoc(employeeRef, {
+          tasks: arrayUnion({...formData})
+      })
+      setFormData(initialFormState)
+    }else{
+      alert('Proszę uzupełnić brakujące pola w formularzu!')
+    }
   }
 
   const handleActions = (e, index, id, employeeId) => {
@@ -66,7 +75,9 @@ function EmployeeList() {
 
     if(textContent === 'EDIT') {
       e.target.textContent = 'APPLY'
-      inputs.forEach((item, i) => item.removeAttribute('readonly'))
+      const filteredInputs = inputs.filter((item, i) => item.name !== 'employee')
+      filteredInputs.forEach((item, i) => item.removeAttribute('readonly'))
+      console.log(inputObject)
     }
     if(textContent === 'APPLY'){ 
       inputs.forEach((item, i) => item.setAttribute('readonly', true))
@@ -113,7 +124,6 @@ function EmployeeList() {
             .then(() => {
               Swal.fire({
                 title: 'Task has been finished',
-                // text: 'Do you want to end this task?',
                 icon: 'success',
                 confirmButtonText: 'Close'
               })
@@ -138,7 +148,7 @@ function EmployeeList() {
     <>
       <div className='section__title'>
         Manage Tasks
-        <button onClick={() => console.log(employees)}>check</button>
+        <button onClick={() => console.log(formData)}>check</button>
         <button onClick={() => document.querySelector('.add__task').classList.toggle('visible')}>Add task</button>
       </div>
       <div className="add__task">
@@ -157,16 +167,18 @@ function EmployeeList() {
               <tr>
                 <td>
                   <select name='employee' value={formData.employee} onChange={handleForm}>
+                  <option hidden>Choose employee</option>
                     {employees.map((item, i) => (
-                      <option key={item.id} data-id={item.id}>
-                        {item.data.name + ' ' + item.data.surname}
-                      </option>
+                        <option key={item.id} data-id={item.id}>
+                          {item.data.name + ' ' + item.data.surname}
+                        </option>
                     ))}
                   </select>
                 </td>
                 <td><input type="text" name='details' value={formData.details} onChange={handleForm}/></td>
                 <td>
                   <select name='priority' value={formData.priority} onChange={handleForm}>
+                    <option hidden>Choose priority</option>
                     <option value="veryhigh">Very high</option>
                     <option value="high">High</option>
                     <option value="moderate">Moderate</option>
@@ -199,9 +211,18 @@ function EmployeeList() {
             {employees.length > 0 && employees.map((item) => (
               item.data.tasks && item.data.tasks.map((item, index) => (
                 <tr key={item.taskId} id={item.taskId}>
-                  <td><input type="text" name='employee' data-name defaultValue={item.employee} readOnly/></td>
+                  <td>
+                    <input type="text" name='employee' readOnly defaultValue={item.employee}/>
+                  </td>
                   <td><input type="text" name='details' data-timestamp defaultValue={item.details} readOnly/></td>
-                  <td><input type="select" name='priority' data-timestamp defaultValue={item.priority} readOnly/></td>
+                  <td>
+                    <select type="select" name='priority' data-timestamp defaultValue={item.priority} >
+                      <option value="veryhigh">Very high</option>
+                      <option value="high">High</option>
+                      <option value="moderate">Moderate</option>
+                      <option value="low">Low</option>
+                    </select>
+                  </td>
                   <td><input type="datetime-local" name='deadline' data-timestamp defaultValue={item.deadline} readOnly/></td>
                   <td style={{display:'flex'}}>
                     <button onClick={(e) => handleActions(e, index ,item.taskId, item.id)}>EDIT</button>
