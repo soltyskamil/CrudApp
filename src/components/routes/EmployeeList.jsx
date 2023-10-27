@@ -107,7 +107,6 @@ function EmployeeList() {
           if(employeeDoc.exists()){
             const employeeData = employeeDoc.data()
             const updatedArray = employeeData.tasks.filter(item => item.taskId !== id)
-            console.log(updatedArray)
             Swal.fire({
               title: 'Are you sure?',
               text: 'Do you want to end this task?',
@@ -117,7 +116,8 @@ function EmployeeList() {
             .then((result) => {
               if(result.isConfirmed){
                 updateDoc(employeeRef, {
-                  tasks: updatedArray
+                  tasks: updatedArray,
+                  finishedTasks: employeeData.finishedTasks + 1
                 })
               }
             })
@@ -148,7 +148,7 @@ function EmployeeList() {
     <>
       <div className='section__title'>
         Manage Tasks
-        <button onClick={() => console.log(formData)}>check</button>
+        <button onClick={() => console.log(employees)}>check</button>
         <button onClick={() => document.querySelector('.add__task').classList.toggle('visible')}>Add task</button>
       </div>
       <div className="add__task">
