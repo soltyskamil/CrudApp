@@ -21,7 +21,71 @@ function Analytics() {
       unsubscribe();
     };
   }, []);
-  console.log(employees)
+
+  const millisToMinutesAndSeconds = (millis) => {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+  }
+
+  const employeesTaskPriority = (item) => {
+    if(item.data.allTasks){
+      const tasks = item.data.allTasks.map((item, i) => item.priority) 
+      const propertyCount = {};
+      tasks.forEach(item => {
+        if(propertyCount[item]){
+          propertyCount[item]++
+        } else {
+          propertyCount[item] = 1;
+        }
+      }) 
+      
+      let mostFrequentProperty = null;
+      let maxCount = 0;
+
+      for (const item in propertyCount) {
+        if (propertyCount[item] > maxCount) {
+            mostFrequentProperty = item;
+            maxCount = propertyCount[item];
+        }
+      }
+      return mostFrequentProperty + ' ' + maxCount
+    }
+  }
+  // const employeesTaskPriority = employees.map((item, index) => {
+  //   if(item.data.allTasks){
+  //     const tasks = item.data.allTasks.map((item, i) => item.priority) 
+  //     const propertyCount = {};
+  //     tasks.forEach(item => {
+  //       if(propertyCount[item]){
+  //         propertyCount[item]++
+  //       } else {
+  //         propertyCount[item] = 1;
+  //       }
+  //     }) 
+      
+  //     let mostFrequentProperty = null;
+  //     let maxCount = 0;
+
+  //     for (const item in propertyCount) {
+  //       if (propertyCount[item] > maxCount) {
+  //           mostFrequentProperty = item;
+  //           maxCount = propertyCount[item];
+  //       }
+  //     }
+  //     console.log(tasks)
+  //     return mostFrequentProperty + ' ' + maxCount
+  //   }
+  // })
+  // const employeesTaskPriority = employees.reduce((acc, employee) => {
+  //   if(employee.data.allTasks){
+  //     acc.push(
+  //       ...employee.data.allTasks.map((item, i) => item.priority)
+  //     )
+  //   }
+  //   return acc
+  // }, [])
+
   return (
     <div>
       Analytics
@@ -36,16 +100,16 @@ function Analytics() {
         </thead>
         <tbody>
           {employees.length > 0 && employees.map((item, i) => {
-            function millisToMinutesAndSeconds(millis) {
-              var minutes = Math.floor(millis / 60000);
-              var seconds = ((millis % 60000) / 1000).toFixed(0);
-              return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
-            }
             return (
               <tr key={item.data.id}>
                 <td>{item.data.name}</td>
                 <td>{item.data.finishedTasks.ended}</td>
-                <td></td>
+                <td>
+                  { item.data.allTasks 
+                    ? employeesTaskPriority(item)
+                    : <span>No data yet</span>
+                  }
+                </td>
                 <td>
                   {item.data.finishedTasks.time 
                   ? millisToMinutesAndSeconds(item.data.finishedTasks.time)
