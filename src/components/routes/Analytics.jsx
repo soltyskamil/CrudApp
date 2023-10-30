@@ -52,40 +52,7 @@ function Analytics() {
       return mostFrequentProperty + ' ' + maxCount
     }
   }
-  // const employeesTaskPriority = employees.map((item, index) => {
-  //   if(item.data.allTasks){
-  //     const tasks = item.data.allTasks.map((item, i) => item.priority) 
-  //     const propertyCount = {};
-  //     tasks.forEach(item => {
-  //       if(propertyCount[item]){
-  //         propertyCount[item]++
-  //       } else {
-  //         propertyCount[item] = 1;
-  //       }
-  //     }) 
-      
-  //     let mostFrequentProperty = null;
-  //     let maxCount = 0;
-
-  //     for (const item in propertyCount) {
-  //       if (propertyCount[item] > maxCount) {
-  //           mostFrequentProperty = item;
-  //           maxCount = propertyCount[item];
-  //       }
-  //     }
-  //     console.log(tasks)
-  //     return mostFrequentProperty + ' ' + maxCount
-  //   }
-  // })
-  // const employeesTaskPriority = employees.reduce((acc, employee) => {
-  //   if(employee.data.allTasks){
-  //     acc.push(
-  //       ...employee.data.allTasks.map((item, i) => item.priority)
-  //     )
-  //   }
-  //   return acc
-  // }, [])
-
+  
   return (
     <div>
       Analytics

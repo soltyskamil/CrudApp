@@ -1,12 +1,13 @@
 import React from 'react'
 import { auth } from '../../config/firebase';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Routes, Route } from 'react-router-dom';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../../styles/auth/Auth.css'
-import image from '../../images/signbackground.jpg'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import image from '../../assets/images/background.jpg'
+import google from '../../assets/images/google.png'
 function Auth() {
   return (
     <div className='authentication'>
@@ -14,10 +15,13 @@ function Auth() {
             <img src={image} alt="background" />
         </div>
         <div className="auth__login">
-            <LockOutlinedIcon/>
-            <CreateAccount />
-            <SignIn />
-            <SignInSocials />
+            <div className="auth__wrapper">
+                <Routes>
+                    <Route path='/' exact='true' element={<CreateAccount />}/>
+                    <Route path='/login' exact='true' element={<SignIn />}/>
+                </Routes>
+                <SignInSocials />
+            </div>
         </div>
     </div>
   )
@@ -26,11 +30,11 @@ function Auth() {
 function CreateAccount(){
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
-    const [password, setPassword] = useState({password: '', passwordConfirmed: ''})
+    const [password, setPassword] = useState('')
     const createHandler = async e => {
         e.preventDefault()
-        if(password.password === password.passwordConfirmed && password.password.length >= 6 && password.passwordConfirmed.length >= 6){
-            createUserWithEmailAndPassword(auth, email, password.password)
+        if(password.length >= 6){
+            createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log(user)
@@ -62,18 +66,35 @@ function CreateAccount(){
         }
       }
     return (
+        <>
         <form onSubmit={createHandler}>
-            <h2>Make an account</h2>
-            <input type="email" placeholder='email' name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-            <input type="password" placeholder='password' name="password" id="password" value={password.password}  onChange={(e) => setPassword({password: e.target.value, passwordConfirmed: password.passwordConfirmed})}/>
-            <input type="password" placeholder='confirm password' name="confirmed_password" id="confirmed_password" value={password.passwordConfirmed} onChange={(e) => setPassword({password: password.password, passwordConfirmed: e.target.value})}/>
-            <button type='submit'>Register</button>
+            <div className="wrapper">
+            <h2>Sign up</h2>
+            <span data-create>Create account with seconds</span>
+
+            </div>
+            <label htmlFor="email">
+                <input type="email" placeholder='Email Address' name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+            </label>
+            <label htmlFor="password">
+                <input type="password" placeholder='Password' name="password" id="password" value={password}  onChange={(e) => setPassword(e.target.value)}/>
+            </label>
+            <div className="signup__functions">
+                <label htmlFor="checkbox" id='checkboxx'>
+                    Keep me logged in
+                    <input type="checkbox" name="checkbox" id="checkbox" />
+                </label>
+                <a href="#">Forgot password?</a>
+            </div>
+            <button type='submit'>Sign up</button>
         </form>
+        <span data-already>Already have an account? <Link to='/login'>Log in</Link></span>
+        </>
     )
 }
 
 
-function SignIn(){
+export function SignIn(){
     const navigate = useNavigate()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -103,16 +124,40 @@ function SignIn(){
             });  
         }
     return (
+        // <form onSubmit={signHandler}>
+        //     <h2>Sign in</h2>
+        //     <input type="email" placeholder='email' name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+            // <input type="password" placeholder='password' name="password" id="password" value={password}  onChange={(e) => setPassword(e.target.value)}/>
+        //     <button type='submit'>Sign in</button>
+        // </form>
+        <>
         <form onSubmit={signHandler}>
-            <h2>Sign in</h2>
-            <input type="email" placeholder='email' name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
-            <input type="password" placeholder='password' name="password" id="password" value={password}  onChange={(e) => setPassword(e.target.value)}/>
-            <button type='submit'>Sign in</button>
+            <div className="wrapper">
+            <h2>Login</h2>
+            <span data-create>Please enter your login details</span>
+
+            </div>
+            <label htmlFor="email">
+                <input type="email" placeholder='Email Address' name="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
+            </label>
+            <label htmlFor="password">
+            <input type="password" placeholder='Password' name="password" id="password" value={password}  onChange={(e) => setPassword(e.target.value)}/>
+            </label>
+            <div className="signup__functions">
+                <label htmlFor="checkbox" id='checkboxx'>
+                    Keep me logged in
+                    <input type="checkbox" name="checkbox" id="checkbox" />
+                </label>
+                <a href="#">Forgot password?</a>
+            </div>
+            <button type='submit'>Log in</button>
         </form>
+        <span data-already>Dont have an account? <Link to='/'>Sign up</Link></span>
+        </>
     )
 }
 
-function SignInSocials(){
+export function SignInSocials(){
     const provider = new GoogleAuthProvider();
     const navigate = useNavigate()
     const loginWithSocials = () => {
@@ -136,9 +181,13 @@ function SignInSocials(){
 
     return (
         <div className='google'>
-            <h2>Or just login with google</h2>
-            <button onClick={loginWithSocials}>
-                Login with google
+            <div className="google__wrapper">
+                    <div className="google__divider"></div>
+                        <span>or continue with google</span>
+                    <div className="google__divider"></div>
+            </div>
+            <button onClick={loginWithSocials} data-google>
+                <img src={google} alt="google logo" />
             </button>
         </div>
     )

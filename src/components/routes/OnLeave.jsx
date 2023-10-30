@@ -42,7 +42,7 @@ function OnLeave() {
     const deadlineB = new Date(b.deadline).getTime()
     return deadlineA - deadlineB;
   })
-  console.log(trimmedTasks)
+  console.log(Boolean(trimmedTasks))
   return (
     <div>
       <table className='employees'>
@@ -55,7 +55,8 @@ function OnLeave() {
             </tr>
           </thead>
           <tbody>
-            {sortedTasks.map((item, index) => (
+            {sortedTasks.length > 0 
+            ? sortedTasks.map((item, index) => (
                 <tr key={item.taskId} id={item.taskId}>
                   <td>
                     <input type="text" name='employee' readOnly defaultValue={item.employee}/>
@@ -70,7 +71,9 @@ function OnLeave() {
                     <input type="datetime-local" name='deadline' data-timestamp defaultValue={item.deadline} readOnly/>
                   </td>
                 </tr>
-              ))}
+              ))
+            : <span>No tasks for upcoming 7 days</span>
+            }
           </tbody>
         </table>
     </div>
