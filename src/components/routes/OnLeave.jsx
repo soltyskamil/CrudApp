@@ -44,7 +44,7 @@ function OnLeave() {
   })
   console.log(Boolean(trimmedTasks))
   return (
-    <div>
+    <div className='section__app'>
       <table className='employees'>
           <thead>
             <tr>

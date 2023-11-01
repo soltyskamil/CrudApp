@@ -54,8 +54,7 @@ function Analytics() {
   }
   
   return (
-    <div>
-      Analytics
+    <div className='section__app'>
       <table className='employees'>
         <thead>
           <tr>

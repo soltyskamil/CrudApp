@@ -1,5 +1,5 @@
 .main__section{
-    padding: 1rem;
+    padding: .75rem 4rem;
     max-width: calc(100vw - 200px);
     margin-left: auto;
     min-height: 100vh;
@@ -8,7 +8,6 @@
 }
 .sections__page{
     flex: 1;
-    border: 2px solid blue;
     display: flex;
     flex-direction: column;
 }
@@ -69,40 +68,31 @@
 
 @media(max-width: 50em){
     .dashboard__navigation{
-        height: 100px;
-        bottom: 0;
-        padding: 0;
-        border: 5px solid green;
-        flex-direction: row;
-        width: 100%;
-        position: absolute;
-        justify-content: center;
-        gap: .25rem;
-        align-items: center;
+       position: absolute;
+       bottom: 0;
+       height: min-content;
+       width: 100%;
     }
-    .main__navigation li[data-mobile]{
-        display: block;
+    .main__navigation .ul__wrapper{
+        display: flex;
     }
     .home__icon{
         display: none;
     }
-    .main__navigation ul{
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: .25rem;
-    }
+    
     .main__navigation{
         padding: 0;
     }
     .settings{
         display: none;
     }
-    .main__navigation li{
-        margin: 0;
+    .ul__wrapper li{
+        margin: 0.05rem;
+        width: 35%;
     }
-    .main__navigation li a svg{
-        /* font-size: 3rem; */
+    .ul__wrapper li svg{
+        margin: auto;
+        scale: 1.2;
     }
     
     .main__navigation ul li span {

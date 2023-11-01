@@ -1,0 +1,109 @@
+.section__title{
+    /* border: 2px solid black; */
+    padding-top: .5rem;
+}
+.section__title h2{
+    line-height: 12px;
+}
+.section__title span{
+    color: black;
+}
+
+/* GRID EMPLOYEES */
+.grid__employees{
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    padding: 1rem 0;
+    /* border: 5px solid green; */
+}
+.employee__container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 120px;
+    padding: .5rem;
+    gap: 2.5rem;
+}
+.columns h3{
+    line-height: 14px;
+    font-size: 2rem;
+}
+.columns svg{
+    width: 58px;
+    height: 58px;
+    padding: .5rem;
+    z-index: 9999;
+}
+.columns svg g{
+    z-index: 9999;
+}
+.columns svg g path{
+    z-index: 9999;
+}
+.icon__container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 100vw;
+    background-color: #D9D9D9;
+    width: 87px;
+    height: 87px;
+}
+.columns span{
+    font-size: 1.25rem;
+}
+
+/* GRID APPS */
+.grid__employees__apps{
+    border: 5px solid green;
+    display: flex;
+}
+@media(max-width: 65em){
+    .grid__employees__apps{
+        grid-template-columns: 1fr;
+    }
+}
+.employee__data{
+    display: flex;
+    margin: .25rem 0;
+    align-items: center;
+    padding: .5rem;
+    justify-content: space-between;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 6px 24px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px;
+}
+.employee__data__wrapper{
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+}
+.employee__data__wrapper img{
+    width: 32px;
+    height: 32px;
+    border-radius: 100vw;
+}
+.employee__data span{
+    color: green;
+}
+.grid__employees__app__element{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.grid__rows.one{
+    border: 3px solid red;
+    flex: 2;
+}
+.grid__rows.two{
+    border: 3px solid blue;
+    flex: 1.5;
+    display: flex;
+    gap: .25rem;
+}
+.grid__rows.two > .grid__row__item{
+    border: 3px solid green;
+    flex: 1.5;
+    display: flex;
+    align-items: center;
+}
+/* CALENDAR */

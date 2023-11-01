@@ -40,7 +40,8 @@ function ManageEmployees() {
     }, []);
 
   const handleActions = (e, index, id) => {
-    console.log(id)
+    const tr = document.getElementById(`${id}`)
+    console.log(tr)
     const { name, textContent } = e.target
     const table = [...document.getElementById(`${id}`).children]
     const inputObject = {}
@@ -59,6 +60,7 @@ function ManageEmployees() {
     if(textContent === 'EDIT') {
       e.target.textContent = 'APPLY'
       inputs.forEach((item, i) => item.removeAttribute('readonly'))
+      tr.classList.add('editing')
     }
     if(textContent === 'DELETE'){
       Swal.fire({
@@ -85,6 +87,7 @@ function ManageEmployees() {
           updateDoc(doc(db, "employees", id), {...inputObject})
           inputs.forEach((item, i) => item.setAttribute('readonly', true))
           e.target.textContent = 'EDIT'
+          tr.classList.remove('editing')
         }
       })
       
@@ -105,15 +108,18 @@ function ManageEmployees() {
   return (
    <>
       <div className="section__title">
-        <h2>Manage Employees</h2>
         <div className="section__title__action">
-          <button onClick={() => 
-            document.querySelector('.employee__managment').classList.toggle('visible')
-          }>
-            Add employee
-          </button>
+          <div className="title__action">
+            <h2>Employee list</h2>
+            <button onClick={() => 
+              document.querySelector('.employee__managment').classList.add('visible')
+            }>
+              Add employee
+            </button>
+          </div>
         </div>
         <div className="employee__managment">
+          <h3>Add employee</h3>
           <form onSubmit={handleSubmit} id='form'>
             <input type="text" 
               data-addname 
@@ -155,9 +161,16 @@ function ManageEmployees() {
               onChange={(e) => handleForm(e)} 
               required
             />
-            <button type='submit'>
-              Confirm
-            </button>
+            <div className="buttons" style={{display:'flex'}}>
+              <button type='submit'>
+                Submit
+              </button>
+              <button style={{backgroundColor: '#e02d3c'}} onClick={() => 
+                document.querySelector('.employee__managment').classList.remove('visible')
+                }>
+                Cancel
+              </button>
+            </div>
           </form>
         </div>
       </div>
@@ -169,7 +182,7 @@ function ManageEmployees() {
               <th>Surname</th>
               <th>Role</th>
               <th>Salary</th>
-              <th>Started working</th>
+              <th>Joined us</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -181,7 +194,7 @@ function ManageEmployees() {
               <td><input type="text" name='role' data-role defaultValue={item.data.role} readOnly/></td>
               <td><input type="number" name='salary' data-salary defaultValue={item.data.salary} readOnly/></td>
               <td><input type="date" name='timestamp' data-timestamp defaultValue={item.data.timestamp} readOnly/></td>
-              <td style={{display:'flex'}}>
+              <td style={{display:'flex', gap: '.25rem'}}>
                 <button name='edit' data-edit onClick={(e) => handleActions(e, index, item.id)}>EDIT</button>
                 <button name='delete' onClick={(e) => handleActions(e, index, item.id)}>DELETE</button>
               </td>

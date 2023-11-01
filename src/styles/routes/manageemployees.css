@@ -1,6 +1,5 @@
 .section__app{
     flex: 1;
-    background-color: aqua;
     overflow-x: scroll;
 }
 .employee__managment{
@@ -15,11 +14,8 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    /* height: 65vh; */
-    /* height: 20vh; */
     width: 65vw;
     background-color: white;
-    border: 2px solid black;
     display: none;
 }
 .add__task__wrapper{
@@ -35,6 +31,215 @@
 table{
     width: 100%;
 }
+
 .visible{
     display: block;
+    animation: visible;
+    animation-duration: .2s;
+}
+@keyframes visible {
+    from {
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+.title__action{
+    display: flex;
+    /* align-items: center; */
+    padding: .5rem 0;
+    justify-content: space-between;
+}
+.title__action h2{
+    line-height: 24px;
+    align-items: flex-start;
+}
+.title__action button{
+    width: 250px !important;
+    font-size: 1.5rem;
+    font-weight: 200;
+    padding: .5rem 1rem;
+    margin: 0 !important;
+    color: white;
+    background-color: #2F6FED;
+    border: none;
+}
+
+/* TABLE */
+.employees {
+    border-collapse: collapse;
+}
+.employees button{
+    padding: .25rem .5rem;
+}
+.employees button:nth-child(1){
+    border: 1px solid #E1E6EF;
+    color: #1D2433;
+    background-color: #F1F3F9;
+}
+.employees button:nth-child(2){
+    border: none;
+    color: white;
+    background-color: #E02D3C;
+}
+.employees th, td{
+    padding: .5rem;
+}
+
+
+.employees thead{
+    background-color: #d0cece;
+    color: black;
+    text-align: left;
+    font-size: 1.5rem;
+}
+.employees thead th{
+    font-weight: 400 !important;
+}
+.employees input{
+    width: 100%;
+    border: none;
+    background-color: inherit;
+}
+.editing{
+    background-color: rgb(227, 227, 227);
+}
+.editing input {
+    border: 1px dotted black;
+}
+/* FORM */
+.employee__managment{
+    position: absolute;
+    left: 40%;
+
+    /* transform: translate(70%, 0%); */
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 25px;
+    background-color: white;
+    padding: 2rem 5rem;
+    animation: visible;
+    animation-duration: .2s;
+    border-radius: 10px;
+}
+.employee__managment span{
+    position: absolute;
+    right: 18%;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+.employee__managment h3{
+    font-size: 2rem;
+}
+.employee__managment form{
+    max-width: 300px;
+}
+.employee__managment form input{
+    padding: .5rem;
+    border-radius: 5px;
+    border: 1px solid #425066;
+}
+.employee__managment form input::placeholder{
+    text-transform: uppercase;
+}
+.employee__managment form input{
+    width: 100%;
+    margin: .5rem 0;
+}
+.employee__managment form button {
+    width: 100%;
+    display: block;
+    margin: 0;
+    margin-right: auto;
+    padding: .5rem 2rem;
+    color: white;
+    font-weight: 300;
+    border: none;
+    background-color: #136AF3;
+}
+
+@media(max-width: 50em){
+    .employee__managment{
+        position: absolute;
+        left: 2.5%;
+        width: 95%;
+        /* transform: translate(70%, 0%); */
+        box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 25px;
+        background-color: white;
+        padding: 2rem 5rem;
+        animation: visible;
+        animation-duration: .2s;
+        border-radius: 10px;
+    }
+    .add__task{
+        width: 95%;
+    }
+}
+
+/* TASK */
+.add__task{
+    position: absolute;
+    left: 50%;
+    z-index: 9999;
+    /* transform: translate(70%, 0%); */
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 25px;
+    padding: 2rem 5rem;
+    animation: visible;
+    animation-duration: .2s;
+    border-radius: 10px;
+}
+.add__task span{
+    position: absolute;
+    right: 18%;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+.add__task h3{
+    font-size: 2rem;
+}
+.add__task form{
+    display: flex;
+    background-color: white;
+    flex-direction: column;
+}
+.add__task form input, select{
+    padding: .5rem;
+    border-radius: 5px;
+    border: 1px solid #425066;
+}
+.add__task form input::placeholder{
+    text-transform: uppercase;
+}
+.add__task form input{
+    width: 100%;
+    margin: .5rem 0;
+}
+.add__task form button {
+    width: 100%;
+    display: block;
+    margin: 0;
+    margin-right: auto;
+    padding: .5rem 2rem;
+    color: white;
+    font-weight: 300;
+    border: none;
+    background-color: #136AF3;
+}
+select{
+    border: none;
+}
+select:disabled{
+    color: inherit;
+}
+.add__task select{
+    border: 1px solid #425066;
+}
+/* MOBI */
+
+@media(max-width: 50em){
+    .main__section{
+        padding: 1rem;
+    }
+    
 }

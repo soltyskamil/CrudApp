@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom'
 import Dashboard from '../components/dashboard/dashboard'
 import { auth } from '../config/firebase';
 import { useAuthState } from 'react-firebase-hooks/auth'
+
 function App() {
   const [user] = useAuthState(auth)
   return (

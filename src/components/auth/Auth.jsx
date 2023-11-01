@@ -37,7 +37,7 @@ function CreateAccount(){
             createUserWithEmailAndPassword(auth, email, password)
             .then((userCredential) => {
                 const user = userCredential.user;
-                console.log(user)
+                navigate('/manageemployees')
                 Swal.fire({
                     title: 'Success!',
                     text: 'Your account has been successfully created!',
@@ -104,6 +104,7 @@ export function SignIn(){
             .then((userCredential) => {
                 const user = userCredential.user;
                 console.log(user)
+                navigate('/manageemployees')
                 Swal.fire({
                     title: 'Success!',
                     text: 'Logged in successfully',
@@ -166,6 +167,7 @@ export function SignInSocials(){
             const credential = GoogleAuthProvider.credentialFromResult(result);
             const token = credential.accessToken;
             const user = result.user;
+            navigate('/manageemployees')
         }).catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;

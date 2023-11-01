@@ -51,7 +51,7 @@ function EmployeeList() {
       })
       setFormData(initialFormState)
     } else {
-      alert('Proszę uzupełnić brakujące pola w formularzu!')
+      console.error('Proszę uzupełnić brakujące pola w formularzu!')
     }
   }
 
@@ -77,10 +77,15 @@ function EmployeeList() {
     if (textContent === 'EDIT') {
       e.target.textContent = 'APPLY'
       const filteredInputs = inputs.filter((item, i) => item.name !== 'employee')
+      const select = filteredInputs.filter((item, i) => item.localName === 'select')
+      select[0].removeAttribute('disabled')
       filteredInputs.forEach((item, i) => item.removeAttribute('readonly'))
       console.log(inputObject)
     }
     if (textContent === 'APPLY') {
+      const filteredInputs = inputs.filter((item, i) => item.name !== 'employee')
+      const select = filteredInputs.filter((item, i) => item.localName === 'select')
+      select[0].setAttribute('disabled', true)
       inputs.forEach((item, i) => item.setAttribute('readonly', true))
       e.target.textContent = 'EDIT'
       const employeeRef = doc(db, 'employees', employeeId)
@@ -158,25 +163,21 @@ function EmployeeList() {
   return (
     <>
       <div className='section__title'>
-        Manage Tasks
-        <button onClick={() => console.log(employees)}>check</button>
-        <button onClick={() => document.querySelector('.add__task').classList.toggle('visible')}>Add task</button>
+      <div className="section__title__action">
+          <div className="title__action">
+            <h2>Employees tasks</h2>
+            <button onClick={() => 
+              document.querySelector('.add__task').classList.add('visible')
+            }>
+              Add task
+            </button>
+          </div>
+        </div>
       </div>
       <div className="add__task">
-        <div className="add__task__wrapper">
+          <h3>Add task</h3>
           <form onSubmit={handleSubmit}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Task attached to:</th>
-                  <th>Task details</th>
-                  <th>Task priority</th>
-                  <th>Task deadline</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
+            
                     <select name='employee' value={formData.employee} onChange={handleForm}>
                       <option hidden>Choose employee</option>
                       {employees.map((item, i) => (
@@ -185,9 +186,9 @@ function EmployeeList() {
                         </option>
                       ))}
                     </select>
-                  </td>
-                  <td><input type="text" name='details' value={formData.details} onChange={handleForm} /></td>
-                  <td>
+                 
+                  <input type="text" placeholder='Write more details..' name='details' value={formData.details} onChange={handleForm} />
+                  
                     <select name='priority' value={formData.priority} onChange={handleForm}>
                       <option hidden>Choose priority</option>
                       <option value="veryhigh">Very high</option>
@@ -195,19 +196,19 @@ function EmployeeList() {
                       <option value="moderate">Moderate</option>
                       <option value="low">Low</option>
                     </select>
-                  </td>
-                  <td><input type="datetime-local" value={formData.deadline} name='deadline' onChange={handleForm} /></td>
-                  <td style={{ display: 'flex' }}>
+                  <input type="datetime-local" value={formData.deadline} name='deadline' onChange={handleForm} />
+                  <div style={{ display: 'flex', gap: '.25rem' }}>
                     <button type='submit'>Accept</button>
-                    <button>Cancel</button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    <button style={{backgroundColor: '#e02d3c'}} onClick={() => 
+                      document.querySelector('.add__task').classList.remove('visible')
+                    }>
+                      Cancel
+                    </button>
+                  </div>
+            
           </form>
-        </div>
       </div>
-      <div className="task__managment__section">
+      <div className="section__app">
         <table className='employees'>
           <thead>
             <tr>
@@ -227,7 +228,7 @@ function EmployeeList() {
                   </td>
                   <td><input type="text" name='details' data-timestamp defaultValue={item.details} readOnly /></td>
                   <td>
-                    <select type="select" name='priority' data-timestamp defaultValue={item.priority} >
+                    <select type="select" disabled name='priority' data-timestamp defaultValue={item.priority} >
                       <option value="veryhigh">Very high</option>
                       <option value="high">High</option>
                       <option value="moderate">Moderate</option>
